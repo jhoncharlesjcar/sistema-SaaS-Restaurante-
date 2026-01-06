@@ -70,7 +70,7 @@ export default function KitchenDisplay() {
         return () => {
             newSocket.disconnect();
         };
-    }, [user?.restaurant_id, audioEnabled, refetch]);
+    }, [user?.restaurant_id, audioEnabled, refetch, playNotificationSound]);
 
     const playNotificationSound = useCallback(() => {
         try {

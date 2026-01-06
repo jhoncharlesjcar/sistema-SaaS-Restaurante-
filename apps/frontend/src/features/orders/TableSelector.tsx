@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useTables } from '../tables/useTables';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,6 @@ interface TableSelectorProps {
 
 export default function TableSelector({ selectedTableId, onSelect }: TableSelectorProps) {
     const { data: tables, isLoading } = useTables();
-    const [showAll, setShowAll] = useState(false);
 
     const availableTables = tables?.filter((t: RestaurantTable) =>
         t.status === 'available' || t.id === selectedTableId

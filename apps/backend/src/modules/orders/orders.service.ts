@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_CLIENT } from '../../supabase/supabase.module';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -107,7 +107,7 @@ export class OrdersService {
     }
 
     async update(id: string, updateOrderDto: UpdateOrderDto) {
-        const { items, ...orderData } = updateOrderDto;
+        const { ...orderData } = updateOrderDto;
 
         const { data, error } = await this.supabase
             .from('orders')
