@@ -16,7 +16,11 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
+// @ts-expect-error: Mocking global property not in DOM lib
+(global as any).IntersectionObserver = class IntersectionObserver {
+    readonly root: Element | null = null;
+    readonly rootMargin: string = '';
+    readonly thresholds: ReadonlyArray<number> = [];
     constructor() { }
     disconnect() { }
     observe() { }
@@ -24,4 +28,4 @@ global.IntersectionObserver = class IntersectionObserver {
         return [];
     }
     unobserve() { }
-};
+} as any;

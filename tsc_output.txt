@@ -1,0 +1,16 @@
+﻿apps/frontend/src/features/auth/AuthProvider.tsx(55,84): error TS6133: 'session' is declared but its value is never read.
+apps/frontend/src/features/kds/KitchenDisplay.tsx(10,28): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+apps/frontend/src/features/kds/KitchenDisplay.tsx(73,53): error TS2448: Block-scoped variable 'playNotificationSound' used before its declaration.
+apps/frontend/src/features/kds/KitchenDisplay.tsx(73,53): error TS2454: Variable 'playNotificationSound' is used before being assigned.
+apps/frontend/src/features/kds/KitchenDisplay.tsx(207,40): error TS2339: Property 'notes' does not exist on type 'Order'.
+apps/frontend/src/features/kds/KitchenDisplay.tsx(209,51): error TS2339: Property 'notes' does not exist on type 'Order'.
+apps/frontend/src/features/orders/api.ts(3,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+apps/frontend/src/features/products/__tests__/ProductCard.test.tsx(23,9): error TS2353: Object literal may only specify known properties, and 'restaurant_id' does not exist in type '{ id: string; name: string; color?: string | undefined; }'.
+apps/frontend/src/features/products/api.ts(3,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+apps/frontend/src/features/sync/SyncManager.ts(145,37): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+apps/frontend/src/features/tables/api.ts(3,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+apps/frontend/src/lib/supabase.ts(3,33): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+apps/frontend/src/lib/supabase.ts(4,37): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+apps/frontend/src/setupTests.ts(19,1): error TS2322: Type 'typeof IntersectionObserver' is not assignable to type '{ new (callback: IntersectionObserverCallback, options?: IntersectionObserverInit | undefined): IntersectionObserver; prototype: IntersectionObserver; }'.
+  Types of property 'prototype' are incompatible.
+    Type 'IntersectionObserver' is missing the following properties from type 'IntersectionObserver': root, rootMargin, thresholds

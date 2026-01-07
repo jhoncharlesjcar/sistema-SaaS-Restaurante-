@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,17 @@ export default function Login() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const { login } = useAuth();
+    const { login, loading: authLoading, user: authUser } = useAuth();
     const navigate = useNavigate();
+
+    // Log auth state for debugging bounce
+    useEffect(() => {
+        console.log('🔍 Login: Auth state changed', { authLoading, authUser });
+        if (!authLoading && authUser) {
+            console.log('🔍 Login: User detected, redirecting...');
+            navigate('/');
+        }
+    }, [authLoading, authUser, navigate]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -23,7 +32,7 @@ export default function Login() {
         try {
             await login(email, password);
             navigate('/');
-        } catch (err) {
+        } catch (err: any) {
             setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
         } finally {
             setLoading(false);

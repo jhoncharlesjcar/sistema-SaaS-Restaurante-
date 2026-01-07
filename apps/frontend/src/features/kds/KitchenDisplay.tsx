@@ -31,6 +31,15 @@ export default function KitchenDisplay() {
     ) || [];
 
     // Conectar WebSocket
+    const playNotificationSound = useCallback(() => {
+        try {
+            const audio = new Audio('/notification.mp3');
+            audio.play().catch(() => console.log('Audio autoplay blocked'));
+        } catch {
+            console.log('Audio not available');
+        }
+    }, []);
+
     useEffect(() => {
         if (!user?.restaurant_id) return;
 
@@ -72,14 +81,7 @@ export default function KitchenDisplay() {
         };
     }, [user?.restaurant_id, audioEnabled, refetch, playNotificationSound]);
 
-    const playNotificationSound = useCallback(() => {
-        try {
-            const audio = new Audio('/notification.mp3');
-            audio.play().catch(() => console.log('Audio autoplay blocked'));
-        } catch {
-            console.log('Audio not available');
-        }
-    }, []);
+
 
     const handleStartPreparing = async (orderId: string) => {
         try {
@@ -156,8 +158,8 @@ export default function KitchenDisplay() {
                         <Card
                             key={order.id}
                             className={`bg-gray-800 border-2 ${order.status === 'sent_to_kitchen'
-                                    ? 'border-yellow-500'
-                                    : 'border-blue-500'
+                                ? 'border-yellow-500'
+                                : 'border-blue-500'
                                 }`}
                         >
                             <CardHeader className="pb-2">

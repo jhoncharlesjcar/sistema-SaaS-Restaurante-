@@ -7,18 +7,32 @@
     "apps/backend",
     "apps/frontend"
   ],
-    "scripts": {
-      "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-      "dev:backend": "npm run dev --prefix apps/backend",
-      "dev:frontend": "npm run dev --prefix apps/frontend",
-      "build": "npm run build:backend && npm run build:frontend",
-      "build:backend": "npm run build --prefix apps/backend",
-      "build:frontend": "npm run build --prefix apps/frontend",
-      "lint": "npm run lint --prefix apps/backend && npm run lint --prefix apps/frontend",
-      "typecheck": "npm run typecheck --prefix apps/frontend"
-    },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --prefix apps/backend",
+    "dev:frontend": "npm run dev --prefix apps/frontend",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "npm run build --prefix apps/backend",
+    "build:frontend": "npm run build --prefix apps/frontend",
+    "lint": "npm run lint --prefix apps/backend && npm run lint --prefix apps/frontend",
+    "typecheck": "npm run typecheck --prefix apps/frontend",
+    "lint-staged": "lint-staged",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "apps/backend/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "apps/frontend/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
   },
   "engines": {
     "node": ">=18.0.0",

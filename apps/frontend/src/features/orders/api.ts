@@ -27,6 +27,7 @@ export interface Order {
     discount_amount?: number;
     tax_amount: number;
     total: number;
+    notes?: string;
     created_at: string;
     updated_at: string;
     order_items?: OrderItem[];
@@ -63,7 +64,10 @@ export async function getOrders(restaurantId: string, status?: string, tableId?:
     if (tableId) params.append('table_id', tableId);
 
     const response = await fetch(`${API_URL}/orders?${params}`, { headers });
-    if (!response.ok) throw new Error('Error al obtener órdenes');
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Error al obtener órdenes (${response.status}): ${error}`);
+    }
     return response.json();
 }
 
@@ -74,52 +78,53 @@ export async function getOrderById(id: string) {
     return response.json();
 }
 
+import { syncManager } from '../sync/SyncManager';
+
 export async function createOrder(order: CreateOrderInput) {
+    // Modo Offline
+    if (!navigator.onLine) {
+        console.log('📴 Modo Offline: Guardando orden localmente');
+        const localId = crypto.randomUUID();
+        const now = new Date().toISOString();
+
+        // Simular respuesta del servidor
+        const localOrder = {
+            ...order,
+            id: localId,
+            order_number: 'PENDIENTE-SYNC',
+            created_at: now,
+            updated_at: now,
+            status: 'draft',
+            order_items: order.items?.map(item => ({
+                ...item,
+                id: crypto.randomUUID(),
+                order_id: localId,
+                created_at: now,
+                updated_at: now
+            }))
+        };
+
+        // Encolar para sincronización
+        await syncManager.enqueueOperation('orders', 'INSERT', order, localId);
+
+        return localOrder;
+    }
+
     const headers = await getAuthHeaders();
     console.log('API createOrder - Sending:', JSON.stringify(order, null, 2));
 
-    try {
-        const response = await fetch(`${API_URL}/orders`, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(order),
-        });
+    const response = await fetch(`${API_URL}/orders`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(order),
+    });
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('API createOrder - Error response:', errorData);
-            throw new Error(errorData.message || JSON.stringify(errorData) || 'Error al crear orden');
-        }
-        return response.json();
-    } catch (error) {
-        // Si estamos offline, guardar en cola de sincronización
-        if (!navigator.onLine) {
-            console.log('API createOrder - Offline, queuing order');
-            const { addToSyncQueue } = await import('@/lib/syncManager');
-
-            // Generar ID temporal para la orden offline
-            const tempId = `offline-${Date.now()}`;
-            const offlineOrder = {
-                ...order,
-                id: tempId,
-                order_number: `OFFLINE-${Date.now()}`,
-                created_at: new Date().toISOString(),
-                status: order.status || 'draft',
-            };
-
-            await addToSyncQueue({
-                table: 'orders',
-                operation: 'CREATE',
-                data: order,
-                endpoint: `${API_URL}/orders`,
-                method: 'POST',
-            });
-
-            // Retornar orden offline para que la UI la muestre
-            return offlineOrder;
-        }
-        throw error;
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('API createOrder - Error response:', errorData);
+        throw new Error(errorData.message || JSON.stringify(errorData) || 'Error al crear orden');
     }
+    return response.json();
 }
 
 export async function updateOrder(id: string, order: Partial<CreateOrderInput>) {

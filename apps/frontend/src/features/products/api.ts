@@ -56,7 +56,10 @@ export async function getProducts(restaurantId: string, categoryId?: string) {
     if (categoryId) params.append('category_id', categoryId);
 
     const response = await fetch(`${API_URL}/products?${params}`, { headers });
-    if (!response.ok) throw new Error('Error al obtener productos');
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Error al obtener productos (${response.status}): ${error}`);
+    }
     return response.json();
 }
 
